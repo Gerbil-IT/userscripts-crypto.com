@@ -4,7 +4,7 @@
 // @version      0.1
 // @description  show the ballances in USDT
 // @author       Virgil Marin
-// @match        https://crypto.com/exchange/wallets/spot/balances
+// @match        https://crypto.com/*
 // @icon         https://www.google.com/s2/favicons?domain=crypto.com
 // @grant        none
 // ==/UserScript==
