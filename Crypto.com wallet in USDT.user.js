@@ -6,18 +6,49 @@
 // @author       Virgil Marin
 // @match        https://crypto.com/*
 // @icon         https://www.google.com/s2/favicons?domain=crypto.com
-// @grant        none
 // ==/UserScript==
 
-//don't execute twice (because of the iframe)
-if (!window.frameElement) {
-    //Wait for the table to load
-    setTimeout(show, 3000);
-    setTimeout(sorts, 3000);
+//We need this because the match is on generic domain
+//If @match is on full url, the script will load only on refresh not on accessing via link
+//and not when comming from the ajax links
+var pageURLCheckTimer = setInterval (
+    function () {
+        if (    this.lastPathStr  !== location.pathname
+            ||  this.lastQueryStr !== location.search
+            ||  this.lastPathStr   === null
+            ||  this.lastQueryStr  === null
+        ) {
+            this.lastPathStr  = location.pathname;
+            this.lastQueryStr = location.search;
+            gmMain ();
+        }
+    }
+    , 222
+);
+
+function gmMain () {
+    var isCorrectURL;
+    if (window.self === window.top){
+
+        isCorrectURL = document.URL.includes('https://crypto.com/exchange/wallets/spot/balances');
+        if(isCorrectURL){
+            runMain();
+        }
+    }
+}
+
+
+
+function runMain(){
+    //don't execute twice (because of the iframe)
+    if (!window.frameElement) {
+        //Wait for the table to load
+        setTimeout(show, 3000);
+        setTimeout(sorts, 3000);
+    }
 }
 
 function show(){
-
     var btc = document.querySelectorAll('div.estimate-values div.estimate-symbol');
     var usd = document.querySelectorAll('div.estimate-usd');
     var btcValue = btc[0].innerHTML.split(" ")[0];
@@ -25,7 +56,14 @@ function show(){
     usdValue = usdValue.split("$")[1];
     var btcUsd = usdValue / btcValue;
 
-    var btcValues = document.querySelectorAll('tr.e-table-row td.e-table-1_column_5 div.cell');
+
+    var firstTd = document.querySelectorAll('tr.e-table-row td');
+
+    var split = firstTd[0].className.split('_');
+    split[0] = split[0].split('-')[2];
+
+    var btcValues = document.querySelectorAll('tr.e-table-row td.e-table-'+split[0]+'_column_'+(4+parseInt(split[2]))+' div.cell');
+
     var rows = document.querySelectorAll('tr.e-table-row');
 
     var usdtAlreadyShown = document.querySelectorAll('td.usdt');
