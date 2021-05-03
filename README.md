@@ -1,4 +1,6 @@
 # userscripts-crypto.com
+My refferal link:  https://crypto.com/exch/zq63db2zvb
+
 crypto.com show ballances in USD in wallet based on the estimated values (BTC/USD) 
 
 Import the script into TamperMonkey
